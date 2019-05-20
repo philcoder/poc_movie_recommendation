@@ -47,9 +47,9 @@
                                     {% endif %}
                                 {% endwith %}
                                 <div class="form-group">
-                                        {{ form.userLogin.label(class_="label-bold") }}
-                                        {{ form.userLogin(size=20, maxlength=15, class_="form-control top") }}
-                                        {% for error in form.userLogin.errors %}
+                                        {{ form.userName.label(class_="label-bold") }}
+                                        {{ form.userName(size=20, maxlength=15, class_="form-control top") }}
+                                        {% for error in form.userName.errors %}
                                             <span style="color: red;">[{{ error }}]</span>
                                         {% endfor %}
                                 </div>                                
@@ -78,16 +78,16 @@
                                     {% endif %}
                                 {% endwith %}
                                 <div class="form-group">
-                                        {{ registerForm.registerNameUser.label(class_="label-bold") }}
-                                        {{ registerForm.registerNameUser(size=20, maxlength=15, class_="form-control top") }}
-                                        {% for error in registerForm.registerNameUser.errors %}
+                                        {{ registerForm.registerName.label(class_="label-bold") }}
+                                        {{ registerForm.registerName(size=20, maxlength=15, class_="form-control top") }}
+                                        {% for error in registerForm.registerName.errors %}
                                             <span style="color: red;">[{{ error }}]</span>
                                         {% endfor %}
                                 </div>
                                 <div class="form-group">
-                                        {{ registerForm.registerUserLogin.label(class_="label-bold") }}
-                                        {{ registerForm.registerUserLogin(size=20, maxlength=15, class_="form-control top") }}
-                                        {% for error in registerForm.registerUserLogin.errors %}
+                                        {{ registerForm.registerUserName.label(class_="label-bold") }}
+                                        {{ registerForm.registerUserName(size=20, maxlength=15, class_="form-control top") }}
+                                        {% for error in registerForm.registerUserName.errors %}
                                             <span style="color: red;">[{{ error }}]</span>
                                         {% endfor %}
                                 </div>

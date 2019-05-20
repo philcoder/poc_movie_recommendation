@@ -2,7 +2,7 @@ from flask import render_template, flash, redirect, url_for, request
 from werkzeug.urls import url_parse
 from flask_login import login_required, logout_user, current_user, login_user
 
-from app import app
+from app import app, db
 from app.forms import LoginForm, RegisterLoginForm
 from app.models import User, Post
 
@@ -12,6 +12,7 @@ route exemple: http://localhost:16000/webui
 @app.route('/')
 @app.route('/webui')
 def index():
+    #TODO: try to hide this if, maybe using decorator for this
     if current_user.is_authenticated:
         return redirect(url_for('home'))
 
@@ -26,7 +27,7 @@ def signin():
 
     form = LoginForm()
     if form.validate_on_submit():
-        user = User.query.filter_by(username=form.userLogin.data).first()
+        user = User.query.filter_by(username=form.userName.data).first()
         if user is None or not user.check_password(form.userPassword.data):
             flash(u'Invalid username or password', 'loginError')
             return redirect(url_for('index'))
@@ -36,7 +37,6 @@ def signin():
         if not next_page or url_parse(next_page).netloc != '':
             next_page = url_for('home')
         return redirect(next_page)
-        #return redirect(url_for('home'))
 
     registerForm = RegisterLoginForm()
     return render_template('login.html', disablemenu=True, form=form, registerForm=registerForm, tabLoginActive=True)
@@ -48,11 +48,16 @@ def logout():
 
 @app.route('/webui/login/register', methods=['POST'])
 def register():
+    if current_user.is_authenticated:
+        return redirect(url_for('home'))
+
     registerForm = RegisterLoginForm()
     if registerForm.validate_on_submit():
-        registerForm.registerNameUser.data = ""
-        registerForm.registerUserLogin.data = ""
-        registerForm.registerUserPassword.data = ""
+        user = User(name=registerForm.registerName.data, username=registerForm.registerUserName.data, userrole='user')
+        user.set_password(registerForm.registerUserPassword.data)
+        db.session.add(user)
+        db.session.commit()
+
         form = LoginForm()
         return render_template('login.html', disablemenu=True, form=form, registerForm=registerForm, tabLoginActive=True)
 
@@ -63,9 +68,10 @@ def register():
 @app.route('/webui/home')
 @login_required
 def home():
+    user = User.query.get(int(current_user.get_id()))
     import datetime
     userdata = {
-        'username' : 'Philipp Xubad0',
+        'username' : user.username,
         'date' : datetime.datetime.utcnow()
     }
     return render_template('home.html', data=userdata)

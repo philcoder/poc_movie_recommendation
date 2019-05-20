@@ -1,0 +1,33 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+        <script type="text/javascript" src="{{ url_for('static', filename='js/lib/jquery-3.3.1.slim.min.js') }}"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='js/lib/popper.min.js') }}"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='js/lib/bootstrap.min.js') }}"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='js/lib/bootstrap.bundle.min.js') }}"></script>
+    
+
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/lib/bootstrap.min.css') }}" />
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/lib/bootstrap-grid.min.css') }}" />
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/lib/bootstrap-reboot.min.css') }}" />
+
+        <title>Movie Top 5 Recomendation</title>
+    </head>
+    
+    <body>
+        {% if not disablemenu %}
+        <div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom box-shadow">
+            <h5 class="my-0 mr-md-auto font-weight-normal">MovieTop5</h5>
+            <nav class="my-2 my-md-0 mr-md-3">
+                <a class="p-2 text-dark" href="#">Home</a>
+                <a class="p-2 text-dark" href="#">History</a>
+            </nav>
+            <a class="btn btn-outline-primary" href="#">Logout</a>
+        </div>
+        {% endif %}
+        {% block content %}{% endblock %}
+    </body>
+</html>

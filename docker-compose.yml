@@ -1,0 +1,40 @@
+version: '3.4'
+services:
+  postgres-service:
+    container_name: postgres-service
+    hostname: postgres-service
+    image: postgres:11
+    restart: always
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: phil.poc.ia
+      POSTGRES_DB: poc_db
+    ports: 
+      - "20000:5432"
+  # rabbitmq-server:
+  #   build: ./rabbitmq-server
+  #    depends_on:
+  #     - postgres-service
+  web:
+    container_name: web
+    hostname: web
+    build: ./web
+    # depends_on:
+    #   - rabbitmq-server
+    tty: true
+    ports:
+      - "16000:5000"
+    volumes:
+      - './web:/home/web'
+  # ml-service:
+  #   build: ./ml-service
+  #   depends_on:
+  #     - rabbitmq-server
+  #   tty: true
+  #   volumes:
+  #     - './ml-service:/ml-service'
+    
+volumes:
+  web:
+  ml-service:
+

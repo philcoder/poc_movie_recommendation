@@ -1,3 +1,8 @@
-from app import app
+from app import app, db
 
-#only for call from web_run.sh <start | stop>
+from app.models import User, Post
+
+##NOTE: every model create need to be put in dictionary and imported like this code!
+@app.shell_context_processor
+def make_shell_context():
+    return {'db': db, 'User': User, 'Post': Post}

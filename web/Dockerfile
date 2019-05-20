@@ -24,7 +24,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 	&& rm -rf /var/lib/apt/lists/*
 
 RUN apt-get update && apt-get install -y python3-pip
-RUN pip3 install Flask pika flask-wtf flask-sqlalchemy flask-login
+RUN pip3 install Flask pika flask-wtf psycopg2-binary flask-sqlalchemy flask-migrate flask-login
 
 # Create and define the container's working directory.
 WORKDIR /home/web

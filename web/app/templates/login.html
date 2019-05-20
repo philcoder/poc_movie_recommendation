@@ -39,6 +39,13 @@
                         {% endif %}
                             <form class="p-3" action="/webui/login/signin" method="post" novalidate>
                                 {{ form.hidden_tag() }}
+                                {% with messages = get_flashed_messages(category_filter=["loginError"]) %}
+                                    {% if messages %}
+                                        {% for message in messages %}
+                                            <span id="login_error" style="color: red;font-size: 18px;">[{{ message }}]</span>
+                                        {% endfor %}
+                                    {% endif %}
+                                {% endwith %}
                                 <div class="form-group">
                                         {{ form.userLogin.label(class_="label-bold") }}
                                         {{ form.userLogin(size=20, maxlength=15, class_="form-control top") }}
@@ -63,6 +70,13 @@
                         {% endif %}
                             <form class="p-3" action="/webui/login/register" method="post" novalidate>
                                 {{ registerForm.hidden_tag() }}
+                                {% with messages = get_flashed_messages(category_filter=["registerError"]) %}
+                                    {% if messages %}
+                                        {% for message in messages %}
+                                            <span id="register_error" style="color: red;font-size: 18px;">[{{ message }}]</span>
+                                        {% endfor %}
+                                    {% endif %}
+                                {% endwith %}
                                 <div class="form-group">
                                         {{ registerForm.registerNameUser.label(class_="label-bold") }}
                                         {{ registerForm.registerNameUser(size=20, maxlength=15, class_="form-control top") }}

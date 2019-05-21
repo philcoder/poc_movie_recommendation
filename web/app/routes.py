@@ -82,13 +82,15 @@ def sent_recommendation_button():
     import datetime
     userdata = {
         'userid' : current_user.get_id(),
-        'date' : datetime.datetime.utcnow()
+        'date' : datetime.datetime.utcnow().strftime("%d/%m/%Y, %H:%M:%S")
     }
 
-    #client = Publisher()
-    # client.publish(userdata)
     content = request.get_json()
-    print(content)
+    userdata.update(content)
+
+    client = Publisher()
+    client.publish(userdata)
+
     return jsonify(userdata)
 
 @app.route('/webui/unprotected')

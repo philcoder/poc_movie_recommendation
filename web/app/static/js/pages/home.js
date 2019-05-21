@@ -2,7 +2,7 @@
 function executeProcess(){
     var data = {
         type: "movie",
-        tags: "adventure"
+        tags: ["action", "adventure"]
     }
 
     $.ajax({

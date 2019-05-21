@@ -24,7 +24,7 @@ class Publisher:
             connection = self.create_connection()
             
             routing_key   = 'ml.engine.queue'
-            channel = self.connection.channel()
+            channel = connection.channel()
             channel.queue_declare(queue=routing_key, durable=True)
             channel.basic_publish(
                 exchange='',

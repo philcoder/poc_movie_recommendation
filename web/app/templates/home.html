@@ -1,6 +1,10 @@
 {% extends "base.html" %}
 
 {% block content %}
+    <script type="text/javascript" src="{{ url_for('static', filename='js/pages/home.js') }}"></script>
     <h1>You stay inside protected system</h1>
     <br>
+    <p>
+        <input class="btn btn-lg btn-primary btn-block" id="submitRecommendation" name="submitRecommendation" type="submit" value="Process Recommendation" onclick="executeProcess()">
+    </p>
 {% endblock %}

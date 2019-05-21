@@ -1,10 +1,11 @@
-from flask import render_template, flash, redirect, url_for, request
+from flask import render_template, flash, redirect, url_for, request, jsonify
 from werkzeug.urls import url_parse
 from flask_login import login_required, logout_user, current_user, login_user
 
 from app import app, db
 from app.forms import LoginForm, RegisterLoginForm
 from app.models import User, Post
+from app.services import Publisher
 
 '''
 route exemple: http://localhost:16000/webui
@@ -68,13 +69,27 @@ def register():
 @app.route('/webui/home')
 @login_required
 def home():
-    user = User.query.get(int(current_user.get_id()))
+    user = User.query.get(current_user.get_id())
     import datetime
     userdata = {
         'username' : user.username,
         'date' : datetime.datetime.utcnow()
     }
     return render_template('home.html', data=userdata)
+
+@app.route('/webui/recommendation', methods=['POST'])
+def sent_recommendation_button():
+    import datetime
+    userdata = {
+        'userid' : current_user.get_id(),
+        'date' : datetime.datetime.utcnow()
+    }
+
+    #client = Publisher()
+    # client.publish(userdata)
+    content = request.get_json()
+    print(content)
+    return jsonify(userdata)
 
 @app.route('/webui/unprotected')
 def unprotected():

@@ -20,6 +20,11 @@ function main() {
       flask db migrate -m "users table"
       flask db migrate -m "posts table"
       flask db upgrade
+
+      echo "add admin user"
+      export PGPASSWORD='phil.poc.ia'
+      psql -h postgres-service -p 5432 -d poc_db -U root -a -q -f util/data.sql
+      echo "end export sql data"
     elif [ "$script_param" == "db_init" ]; then
       rm -R migrations
       flask db init
@@ -31,6 +36,8 @@ function main() {
     elif [ "$script_param" == "stop" ]; then
       check_root
       fuser -k -n tcp 5000
+    else
+      echo "cmd: '$script_param' not found!"
     fi
 }
 

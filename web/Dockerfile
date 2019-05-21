@@ -1,6 +1,6 @@
 FROM debian:stretch
 
-LABEL maintainer="Philipp Costa"
+LABEL maintainer="Philipp B. Costa"
 
 ENV PATH /usr/local/bin:$PATH
 
@@ -21,8 +21,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 		libssl1.1 \
 		psmisc \
 		nano \
+		procps \
 	&& rm -rf /var/lib/apt/lists/*
 
+RUN apt-get update && apt-get install -y postgresql-client
 RUN apt-get update && apt-get install -y python3-pip
 RUN pip3 install Flask pika flask-wtf psycopg2-binary flask-sqlalchemy flask-migrate flask-login
 

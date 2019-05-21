@@ -3,16 +3,17 @@ services:
   postgres-service:
     container_name: postgres-service
     hostname: postgres-service
-    image: postgres:11
+    image: postgres:10.8
     restart: always
     environment:
       POSTGRES_USER: root
       POSTGRES_PASSWORD: phil.poc.ia
       POSTGRES_DB: poc_db
+      TZ: GMT-3
     ports: 
       - "20000:5432"
     volumes:
-      - ./postgres-service:/var/lib/postgresql/data
+      - db-data:/var/lib/postgresql/data
   rabbitmq-service:
     image: rabbitmq:3-management
     container_name: rabbitmq-service
@@ -44,4 +45,5 @@ services:
 volumes:
   web:
   ml-service:
+  db-data:
 

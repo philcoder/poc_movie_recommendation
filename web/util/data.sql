@@ -1,1 +1,1 @@
-INSERT INTO public."user" VALUES (1, 'Admin', 'admin', 'pbkdf2:sha256:150000$iPssX0h5$7cce8cd3fbc2092de93dd27f91ce9433478887546388a89b070dab322897e66d', 'admin');
+INSERT INTO public."user" VALUES (0, 'Admin', 'admin', 'pbkdf2:sha256:150000$iPssX0h5$7cce8cd3fbc2092de93dd27f91ce9433478887546388a89b070dab322897e66d', 'admin');

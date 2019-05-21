@@ -12,4 +12,5 @@ class Engine:
         text = "You watch the {} at {}".format(data["type"], data["date"])
         dao = TestDao()
         dao.insertDataOnForm(text, int(data["userid"]))
+        dao.close()
         print(" [x] Done")

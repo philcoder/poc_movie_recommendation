@@ -30,7 +30,6 @@ class Consumer:
             )
 
             channel.start_consuming()
-            print(' [*] Waiting for messages. To exit press CTRL+C or kill process')
         except Exception as e:
             print(repr(e))
             traceback.print_exc()

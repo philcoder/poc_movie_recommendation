@@ -24,14 +24,8 @@ class Engine:
         print(" [x] Done")
 
     def loadMovieLensDataset(self):
-        u_cols = ['user_id', 'age', 'sex', 'occupation', 'zip_code']
-        self.users = pd.read_csv('app/dataset/u.user', sep='|', names=u_cols,encoding='latin-1')
         r_cols = ['user_id', 'movie_id', 'rating', 'unix_timestamp']
         self.ratings = pd.read_csv('app/dataset/u.data', sep='\t', names=r_cols,encoding='latin-1')
-        i_cols = ['movie id', 'movie title' ,'release date','video release date', 'IMDb URL', 'unknown', 'Action', 'Adventure','Animation', 
-        'Children\'s', 'Comedy', 'Crime', 'Documentary', 'Drama', 'Fantasy','Film-Noir', 'Horror', 'Musical', 'Mystery', 'Romance', 'Sci-Fi', 
-            'Thriller', 'War', 'Western']
-        self.items = pd.read_csv('app/dataset/u.item', sep='|', names=i_cols,encoding='latin-1')
 
     def collaborativeFilteringModel(self):
         print(type(self.ratings))

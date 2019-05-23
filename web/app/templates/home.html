@@ -2,9 +2,81 @@
 
 {% block content %}
     <script type="text/javascript" src="{{ url_for('static', filename='js/pages/home.js') }}"></script>
-    <h1>You stay inside protected system</h1>
-    <br>
-    <p>
-        <input class="btn btn-lg btn-primary btn-block" id="submitRecommendation" name="submitRecommendation" type="submit" value="Process Recommendation" onclick="executeProcess()">
-    </p>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/pages/home.css') }}" />
+
+    <div class="container justify-content-center align-items-center">
+        <div class="form-group">
+            <div class="row">
+                <div class="col-7">
+                    <input type="text" class="form-control" id="movie_search" size="90" maxlength="90" placeholder="e.g. Toy, Toy Story">
+                </div>
+                <div class="col-2">
+                    <input class="btn btn-primary btn-block" id="btn_search_movie" name="searchMovie" type="submit" value="Search" onclick="searchMovie()">
+                </div>
+                <div class="col-2">
+                    <input class="btn btn-primary btn-block" id="btn_random_movie" name="randomMovie" type="submit" value="Random Movie" onclick="randomMovie()">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="pt-5 d-flex flex-column justify-content-center">
+        <div id="movie_content"class="container content_movie border border-primary rounded" style="width: 650px; display: none">
+            <div class="row pt-2 pl-2 pr-2 pb-1">
+                <div class="col-20">
+                    <label>Title: </label>
+                    <label id="movie_title">The Matrix (1999)The Matrix (1999)The Matrix (1999)</label>
+                </div>
+            </div>
+            <div class="row pt-1 pl-2 pr-2 pb-1">
+                <div class="col-20">
+                    <label>Release: </label>
+                    <label id="movie_release">01-Jan-99</label>
+                </div>
+            </div>
+            <div class="row pt-1 pl-2 pr-2 pb-1">
+                <div class="col-20">
+                    <label>Genres: </label>
+                    <label id="movie_genres">Action/Fiction</label>
+                </div>
+            </div>
+            <div class="row pt-1 pl-2 pr-2 pb-1">
+                <div class="col-17 pt-2">
+                    <label><b>Your Rating: </b></label>
+                </div>
+                <div class="col-2">
+                    <select id="movie_rating" class="form-control">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row pt-5 pb-3 justify-content-center">
+                <div class="col-5">
+                    <input class="btn btn-primary btn-block" id="submitRecommendation" name="submitRecommendation" type="submit" value="Process Recommendation" onclick="executeProcess()">
+                </div>
+            </div>
+        </div>
+
+        <div class="pt-5 container" style="width: 650px;">
+        </div>
+
+        <div id="movie_top5_content" class="container content_movie border border-success rounded" style="width: 650px; display: none">
+            <div class="row pt-3 pb-2 justify-content-center">
+                <div class="col-20">
+                    <h4>Recommended Movies</h4>
+                </div>
+            </div>
+            <div class="row pt-2 pl-2 pr-2 pb-1">
+                <div class="col-20">
+                    <ul id="movie_top5">
+                        <li>The Matrix 3 (2002)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}

@@ -16,7 +16,8 @@ class User(UserMixin, db.Model):
     username = db.Column(db.String(15), index=True, unique=True)
     password_hash = db.Column('pw', db.String(128))
     userrole = db.Column(db.String(5))
-    #posts = db.relationship('Post', backref='author', lazy='dynamic')
+
+    ratings = db.relationship('UserRating', backref='user_rating', lazy='dynamic')
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -26,6 +27,30 @@ class User(UserMixin, db.Model):
 
     def __repr__(self):
         return '<User {}>'.format(self.username)
+
+class UserRating(db.Model):
+    __tablename__ = "user_rating"
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    movie_id = db.Column(db.Integer, db.ForeignKey('movie.id'))
+    rating = db.Column(db.Integer)
+
+    suggest_movies = db.relationship('SuggestMovies', backref='suggest_movies', lazy='dynamic') # lazy only be used with one-to-many
+    movie = db.relationship('Movie', backref='user_rating_movie') # one-to-one
+
+    def __repr__(self):
+        return '<UserRating user_id={}, movie_id={} rating={}>'.format(self.user_id, self.movie_id, self.rating)
+
+class SuggestMovies(db.Model):
+    __tablename__ = "suggest_movies"
+    id = db.Column(db.Integer, primary_key=True)
+    rating_id = db.Column(db.Integer, db.ForeignKey('user_rating.id'))
+    movie_id = db.Column(db.Integer, db.ForeignKey('movie.id'))
+
+    movie = db.relationship('Movie', backref='suggest_movies_movie')
+
+    def __repr__(self):
+        return '<SuggestMovies rating_id={}, movie={}>'.format(self.rating_id, self.movie)
 
 
 class Movie(db.Model):

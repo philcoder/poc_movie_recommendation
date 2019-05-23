@@ -27,6 +27,9 @@ class UserDao():
     def getUserByUsername(self, username):
         return User.query.filter_by(username=username).first()
 
+    def getUserById(self, id):
+        return User.query.get(id)
+
     def count(self):
         return User.query.count()        
 
@@ -62,3 +65,22 @@ class MovieDao():
             print(e)
             db.session.rollback()
             return -1
+
+    def getMovieByName(self, name):
+        sql = "%{}%".format(name)
+        return Movie.query.filter(Movie.title.like(sql)).all()
+    
+    def getMovieById(self, id):
+        return Movie.query.get(id)
+
+class UserRating():
+    def add(self, userRating):
+        try:
+            db.session.add(userRating)
+            db.session.commit()
+        except Exception as e: 
+            print(e)
+            db.session.rollback()
+
+    def listAll(self):
+        print("list all UR")    

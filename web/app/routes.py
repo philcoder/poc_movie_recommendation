@@ -2,13 +2,15 @@ from flask import render_template, flash, redirect, url_for, request, jsonify
 from werkzeug.urls import url_parse
 from flask_login import login_required, logout_user, current_user, login_user
 
+import random
+
 from app import app
 from app.forms import LoginForm, RegisterLoginForm
-from app.models import User
-from app.dao import UserDao
+from app.dao import UserDao, MovieDao
 from app.services import Publisher
 
 userDao = UserDao()
+movieDao = MovieDao()
 
 '''
 route exemple: http://localhost:16000/webui
@@ -69,13 +71,54 @@ def register():
 @app.route('/webui/home')
 @login_required
 def home():
-    user = User.query.get(current_user.get_id())
+    user = userDao.getUserById(current_user.get_id())
     import datetime
     userdata = {
         'username' : user.username,
         'date' : datetime.datetime.utcnow()
     }
     return render_template('home.html', data=userdata)
+
+@app.route('/webui/searchMovie', methods=['POST'])
+def search_movie_button():
+    content = request.get_json()
+    movies = movieDao.getMovieByName(content["movie_name"])
+    if len(movies) != 0:
+        moviePayload = []
+        for movie in movies:
+            moviePayload.append(
+                {
+                    'title' : movie.title,
+                    'release_date' : movie.release_date,
+                    'genres' : movie.genres,
+                }
+            )
+
+        response = {}
+        response['status'] = 'ok'
+        response['movies'] = moviePayload[0]
+
+        return jsonify(response)
+    else:
+        return jsonify({
+            'status' : 'not_found'
+        })
+
+@app.route('/webui/randomMovie', methods=['GET'])
+def random_movie_button():
+    movieId = random.randint(1,1600)
+    movie = movieDao.getMovieById(movieId)
+
+    response = {}
+    response['status'] = 'ok'
+    response['movies'] = {
+        'title' : movie.title,
+        'release_date' : movie.release_date,
+        'genres' : movie.genres,
+    }
+
+    return jsonify(response)
+
 
 @app.route('/webui/recommendation', methods=['POST'])
 def sent_recommendation_button():

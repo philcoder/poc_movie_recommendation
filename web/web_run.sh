@@ -19,6 +19,8 @@ function main() {
       flask db init
       flask db migrate -m "users table"
       flask db migrate -m "movie table"
+      flask db migrate -m "userrating table"
+      flask db migrate -m "suggestmovies table"
       flask db upgrade
 
       echo "add admin user"

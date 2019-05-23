@@ -18,13 +18,18 @@ function main() {
       rm -R migrations
       flask db init
       flask db migrate -m "users table"
-      flask db migrate -m "posts table"
+      flask db migrate -m "movie table"
       flask db upgrade
 
       echo "add admin user"
       export PGPASSWORD='phil.poc.ia'
       psql -h postgres-service -p 5432 -d poc_db -U root -a -q -f util/data.sql
-      echo "end export sql data"
+      echo "finish export sql data"
+
+      echo "import dataset to DB"
+      ./util/import_dataset.py
+      echo "finish import dataset to DB"
+
     elif [ "$script_param" == "db_init" ]; then
       rm -R migrations
       flask db init

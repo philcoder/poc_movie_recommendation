@@ -2,10 +2,13 @@ from flask import render_template, flash, redirect, url_for, request, jsonify
 from werkzeug.urls import url_parse
 from flask_login import login_required, logout_user, current_user, login_user
 
-from app import app, db
+from app import app
 from app.forms import LoginForm, RegisterLoginForm
-from app.models import User, Post
+from app.models import User
+from app.dao import UserDao
 from app.services import Publisher
+
+userDao = UserDao()
 
 '''
 route exemple: http://localhost:16000/webui
@@ -28,8 +31,9 @@ def signin():
 
     form = LoginForm()
     if form.validate_on_submit():
-        user = User.query.filter_by(username=form.userName.data).first()
-        if user is None or not user.check_password(form.userPassword.data):
+        #ignore login from type userrole 'legacy'
+        user = userDao.getUserByUsername(form.userName.data)
+        if user is None or not user.check_password(form.userPassword.data) or user.userrole == 'old':
             flash(u'Invalid username or password', 'loginError')
             return redirect(url_for('index'))
 
@@ -54,11 +58,7 @@ def register():
 
     registerForm = RegisterLoginForm()
     if registerForm.validate_on_submit():
-        user = User(name=registerForm.registerName.data, username=registerForm.registerUserName.data, userrole='user')
-        user.set_password(registerForm.registerUserPassword.data)
-        db.session.add(user)
-        db.session.commit()
-
+        userDao.add(registerForm.registerName.data, registerForm.registerUserName.data, registerForm.registerUserPassword.data)
         form = LoginForm()
         return render_template('login.html', disablemenu=True, form=form, registerForm=registerForm, tabLoginActive=True)
 

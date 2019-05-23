@@ -26,7 +26,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 RUN apt-get update && apt-get install -y postgresql-client
 RUN apt-get update && apt-get install -y python3-pip
-RUN pip3 install Flask pika flask-wtf psycopg2-binary flask-sqlalchemy flask-migrate flask-login
+RUN pip3 install Flask flask-wtf flask-sqlalchemy flask-migrate flask-login psycopg2-binary pandas pika
 
 # Create and define the container's working directory.
 WORKDIR /home/web

@@ -19,8 +19,8 @@ This guide will provide you all the steps to run Movie Recommendation Engine web
 
 
 ### How to Execute like Dev
+
 Go inside clone folder '../poc_movie_recommendations' and execute follows commands as you wish.
--------
 
 For startup all services
 ```
@@ -53,8 +53,8 @@ CTRL+C for stop executing
 ```
 
 ### How to Deploy all services
+
 Go inside clone folder '../poc_movie_recommendations' and execute follows commands as you wish.
--------
 
 For startup all services
 ```

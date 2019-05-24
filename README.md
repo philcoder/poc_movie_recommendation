@@ -52,7 +52,7 @@ docker exec -it ml-service bash
 CTRL+C for stop executing
 ```
 
-### How to Deploy all services
+### How to Deploy all services to production
 
 Go inside clone folder '../poc_movie_recommendations' and execute follows commands as you wish.
 

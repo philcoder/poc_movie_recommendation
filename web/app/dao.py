@@ -1,6 +1,6 @@
 from app import db
 
-from app.models import User, Movie, UserRating
+from app.models import User, Movie, UserRating, SuggestMovies
 
 class UserDao():
     def add(self, name, username, password, userrole='user'):
@@ -94,8 +94,11 @@ class UserRatingDao():
             db.session.rollback()
 
     def getIdUserRating(self, userId, movieId):
-        return UserRating.query.filter_by(user_id=userId, movie_id=movieId).first()
+        return UserRating.query.filter_by(user_id=userId, movie_id=movieId).first() 
 
+    def getUserRatingByUserId(self, userId):
+        return UserRating.query.filter_by(user_id=userId).all() 
 
-    def listAll(self):
-        print("list all UR")    
+class SuggestMoviesDao():
+    def getSuggestMovieByRating(self, ratingId):
+        return SuggestMovies.query.filter_by(rating_id=ratingId).all()

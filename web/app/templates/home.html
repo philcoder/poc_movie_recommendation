@@ -9,12 +9,13 @@
             <div class="row">
                 <div class="col-7">
                     <input type="text" class="form-control" id="movie_search" size="90" maxlength="90" placeholder="e.g. Toy, Toy Story">
+                    <div id="movie_search_error" class="invalid-feedback"></div>
                 </div>
                 <div class="col-2">
-                    <input class="btn btn-primary btn-block" id="btn_search_movie" name="searchMovie" type="submit" value="Search" onclick="searchMovie()">
+                    <button type="button" class="btn btn-primary btn-block" id="btn_search_movie" name="searchMovie" onclick="searchMovie()">Search</button>
                 </div>
                 <div class="col-2">
-                    <input class="btn btn-primary btn-block" id="btn_random_movie" name="randomMovie" type="submit" value="Random Movie" onclick="randomMovie()">
+                    <button type="button" class="btn btn-primary btn-block" id="btn_random_movie" name="randomMovie" onclick="randomMovie()">Random Movie</button>
                 </div>
             </div>
         </div>
@@ -57,7 +58,7 @@
             </div>
             <div class="row pt-5 pb-3 justify-content-center">
                 <div class="col-5">
-                    <input class="btn btn-primary btn-block" id="submitRecommendation" name="submitRecommendation" type="submit" value="Process Recommendation" onclick="recommendationProcess()">
+                    <button type="button" class="btn btn-primary" id="btn_recommendation" name="submitRecommendation" onclick="recommendationProcess()">Recommendation Movie</button>
                 </div>
             </div>
         </div>
@@ -68,7 +69,7 @@
         <div id="movie_top5_content" class="container content_movie border border-success rounded" style="width: 650px; display: none">
             <div class="row pt-3 pb-2 justify-content-center">
                 <div class="col-20">
-                    <h4>Recommended Movies</h4>
+                    <h4>Top 5 Movies Recommended</h4>
                 </div>
             </div>
             <div class="row pt-2 pl-2 pr-2 pb-1">

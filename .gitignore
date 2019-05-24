@@ -105,3 +105,5 @@ venv.bak/
 
 # ignore python migrations
 migrations/
+
+web/util/db.created

@@ -6,12 +6,14 @@ import random
 
 from app import app
 from app.forms import LoginForm, RegisterLoginForm
-from app.dao import UserDao, MovieDao, UserRatingDao
+from app.dao import UserDao, MovieDao, UserRatingDao, SuggestMoviesDao
 from app.services import Publisher
 
 userDao = UserDao()
 movieDao = MovieDao()
 userRatingDao = UserRatingDao()
+suggestMoviesDao = SuggestMoviesDao()
+
 
 '''
 route exemple: http://localhost:16000/webui
@@ -79,7 +81,7 @@ def home():
     import datetime
     userdata = {
         'username' : user.username,
-        'date' : datetime.datetime.utcnow()
+        'menu_button_text' : 'History'
     }
     return render_template('home.html', data=userdata)
 
@@ -134,15 +136,65 @@ def sent_recommendation_button():
     response = {}
     response['rating_id'] = ratingId
 
-    #TODO:
-    # criar um metodo em JS para verificar em 5-5s o suggest movie e mostrar na tela
-
     client = Publisher()
     client.publish(response)
 
     response['status'] = 'ok'
     return jsonify(response)
 
-@app.route('/webui/unprotected')
-def unprotected():
-    return render_template('unprotected.html', disablemenu=True)
+@app.route('/webui/watchRecommendation', methods=['POST'])
+def watch_movie_recommendation():
+    content = request.get_json()
+    suggestMovies = suggestMoviesDao.getSuggestMovieByRating(content['rating_id'])
+
+    response = {}
+    if not suggestMovies:
+        response['status'] = 'empty_table'
+    else:
+        response['status'] = 'ok'
+        movies = []
+        for suggest in suggestMovies:
+            movies.append({
+                'title' : suggest.movie.title,
+                'genres' : suggest.movie.genres,
+            })
+        response['movies'] = movies
+
+    return jsonify(response)
+
+@app.route('/webui/history')
+@login_required
+def history():
+    user = userDao.getUserById(current_user.get_id())
+    userdata = {
+        'username' : user.username,
+        'menu_button_text' : 'Home'
+    }
+    return render_template('history.html', data=userdata)
+
+@app.route('/webui/userRatings', methods=['GET'])
+def getUserRatings():
+    userRatings = userRatingDao.getUserRatingByUserId(current_user.get_id())
+    response = {}
+    if not userRatings:
+        response['status'] = 'empty_table'
+    else:
+        response['status'] = 'ok'
+
+        ratings = []
+        for user in userRatings:
+            ratings.append({
+                'title' : user.movie.title,
+                'rating' : user.rating,
+                'suggests' : getMoviesFromArray(user.suggest_movies),
+            })
+        response['history_ratings'] = ratings
+    
+    return jsonify(response)
+
+def getMoviesFromArray(suggest_movies):
+    movies = ""
+    for suggest in suggest_movies:
+        movies += suggest.movie.title + "; "
+        
+    return movies[:-2]

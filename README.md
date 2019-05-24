@@ -18,8 +18,8 @@ This guide will provide you all the steps to run Movie Recommendation Engine web
 4. Others: Linux, ShellScript, Docker
 
 
-##### How to Execute like Dev
-PS: Go inside clone folder '../poc_movie_recommendations' and execute follows commands as you wish.
+### How to Execute like Dev
+Go inside clone folder '../poc_movie_recommendations' and execute follows commands as you wish.
 -------
 
 For startup all services
@@ -52,8 +52,8 @@ docker exec -it ml-service bash
 CTRL+C for stop executing
 ```
 
-##### How to Deploy all services
-PS: Go inside clone folder '../poc_movie_recommendations' and execute follows commands as you wish.
+### How to Deploy all services
+Go inside clone folder '../poc_movie_recommendations' and execute follows commands as you wish.
 -------
 
 For startup all services

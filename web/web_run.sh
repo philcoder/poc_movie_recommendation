@@ -36,8 +36,8 @@ function main() {
     elif [ "$script_param" == "db_build" ]; then
       build
     elif [ "$script_param" == "db_check_build" ]; then
-      if [ ! -f "/home/web/util/db.created" ]; then
-        touch /home/web/util/db.created
+      if [ ! -f "/tmp/db.created" ]; then
+        touch /tmp/db.created
         build
       else
         echo "database already created!"

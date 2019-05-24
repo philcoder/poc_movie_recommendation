@@ -11,7 +11,7 @@ services:
       POSTGRES_DB: poc_db
       TZ: GMT-3
     ports: 
-      - "20000:5432"
+      - '20000:5432'
     volumes:
       - db-data:/var/lib/postgresql/data
   rabbitmq-service:
@@ -22,9 +22,9 @@ services:
       RABBITMQ_ERLANG_COOKIE: erlang.SECRET.cookie
       RABBITMQ_DEFAULT_USER: root
       RABBITMQ_DEFAULT_PASS: phil.poc.ia
-      RABBITMQ_DEFAULT_VHOST: "/"
+      RABBITMQ_DEFAULT_VHOST: '/'
     ports:
-     - "17000:15672"
+     - '17000:15672'
   web:
     container_name: web
     hostname: web
@@ -33,11 +33,11 @@ services:
       dockerfile: Dockerfile-deploy
     tty: true
     ports:
-      - "16000:5000"
+      - '16000:5000'
     volumes:
       - './web:/home/web'
     entrypoint:
-      - entrypoint.sh
+      - '/home/web/entrypoint.sh'
   ml-service:
     container_name: ml-service
     hostname: ml-service
@@ -48,7 +48,7 @@ services:
     volumes:
       - './ml-service:/home/service'
     entrypoint:
-      - entrypoint.sh
+      - '/home/service/entrypoint.sh'
     
 volumes:
   web:

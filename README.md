@@ -3,6 +3,13 @@ PoC for Movie Recommendation Engine (MRE)
 
 This guide will provide you all the steps to run Movie Recommendation Engine web application.
 
+
+### System Requeriments:
+
+1. Ubuntu LTS 18.04 (tested distro) or another linux
+2. Components docker and docker-compose already installed on machine
+3. HDD 2 GB available
+
 ### Technologies used:
 
 1. Web side: Python 3.x, Flask, Javascript, Jquery and Bootstrap
@@ -11,28 +18,57 @@ This guide will provide you all the steps to run Movie Recommendation Engine web
 4. Others: Linux, ShellScript, Docker
 
 
-How to Execute
+##### How to Execute like Dev
+PS: Go inside clone folder '../poc_movie_recommendations' and execute follows commands as you wish.
 -------
 
-Start all services with docker compose
-
+For startup all services
 ```
 docker-compose -f docker-compose.yml up -d --build
 ```
 
-Stop all services with docker compose
+For manually started 'web' container follow commands.
 ```
-docker-compose -f docker-compose.yml down
+docker exec -it web bash
+
+#only at first time as dev (for build database)
+./web_run db_build
+
+#to see flask running
+./web_run start
+
+CTRL+C for stop executing
 ```
 
-Stop all services and clean-up volumes with docker compose
+Access web service: http://localhost:16000/webui
+
+For manually started 'ml-service' container follow commands.
 ```
-docker-compose -f docker-compose.yml down --volumes
+docker exec -it ml-service bash
+
+#execute
+./main.py
+
+CTRL+C for stop executing
 ```
 
-Join inside docker container
+##### How to Deploy all services
+PS: Go inside clone folder '../poc_movie_recommendations' and execute follows commands as you wish.
+-------
+
+For startup all services
 ```
-docker exec -it <container_name> bash
+docker-compose -f docker-compose-deploy.yml up -d --build
 ```
 
-Text TODO. 
+For stop all services
+```
+docker-compose -f docker-compose-deploy.yml down
+```
+
+For stop and cleanup volumes 
+```
+docker-compose -f docker-compose-deploy.yml down --volumes
+```
+
+Access web service: http://localhost:16000/webui

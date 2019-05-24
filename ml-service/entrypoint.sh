@@ -1,4 +1,6 @@
 #!/bin/bash
 
-sleep(15)
+cd /home/service
+
+sleep 20
 python3 main.py

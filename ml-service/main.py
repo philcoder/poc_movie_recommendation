@@ -10,7 +10,6 @@ from app.engine import Engine
 
 def main():
     cpu_count = os.cpu_count()
-    cpu_count = 2
     processes = [Process(target=start_consumers) for x in range(cpu_count)]
 
     for proc in processes:

@@ -8,7 +8,11 @@ import numpy as np
 
 from sklearn.metrics.pairwise import pairwise_distances
 
-# PS: this engine executes inside python subprocess...
+'''
+PS: this engine executes inside python subprocess...
+
+For more details of implementation see: https://www.analyticsvidhya.com/blog/2018/06/comprehensive-guide-recommendation-engine-python/ (item 4)
+'''
 class Engine:
     ratingId = None
     useridModelMap = None

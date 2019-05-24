@@ -1,0 +1,15 @@
+Requesitos um software para recomendação de filmes, baseado no dataset MovieLens
+#front
+- Tela de login
+- Tela de registro de login
+- Tela de consulta do filmes
+- Tela para avaliação de um filme consultado
+- Tela para mostrar as 5 recomendações de um filme
+- Tela com uma tabela historica das avaliações e filmes recomendado pelo sistema
+
+#backen
+- Banco de dados PostgreSQL
+- Sistema de portabilidade de alguns dados do MovieLens (usuarios e filmes) para banco de dados
+- Backend do ML-Engine usando rabbitMQ como Consumidor de processos
+- Camada web usando o rabbitMQ como Produtor de demanda de processos de ML
+- Implementar ML-Engine baseado no algoritmo de recomendação item-item

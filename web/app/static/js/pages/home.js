@@ -34,23 +34,18 @@ function randomMovie(){
 }
 
 function populateMovieContent(serverData){
-    $("#movie_title").text(serverData.movies.title);
-    $("#movie_release").text(serverData.movies.release_date);
-    $("#movie_genres").text(serverData.movies.genres);
+    $('#movie_search').text("")
+    $("#movie_title").text(serverData.movie.title);
+    $("#movie_release").text(serverData.movie.release_date);
+    $("#movie_genres").text(serverData.movie.genres);
+    $('#movie_id').attr('value',serverData.movie.id);
     $("#movie_content").show();
 }
 
-
-
-
-
-
-
-
 function recommendationProcess(){
     var data = {
-        type: "movie",
-        tags: ["action", "adventure"]
+        movie_id: $('#movie_id').val(),
+        rating: $('#movie_rating').val(),
     }
 
     $.ajax({
@@ -61,6 +56,7 @@ function recommendationProcess(){
         dataType: 'json',
         data: JSON.stringify(data),
         success: function(serverData){
+            //dispara uma consulta ao servidor a cada 5s para popular o proxima tabela
             console.log("recebido do servidor: "+serverData)
         }
     })

@@ -8,21 +8,22 @@ import json
 from app.client import Consumer
 from app.engine import Engine
 
-# def main():
-#     cpu_count = os.cpu_count()
-#     processes = [Process(target=start_consumers) for x in range(cpu_count)]
+def main():
+    cpu_count = os.cpu_count()
+    cpu_count = 2
+    processes = [Process(target=start_consumers) for x in range(cpu_count)]
 
-#     for proc in processes:
-#         proc.start()
+    for proc in processes:
+        proc.start()
 
-#     print("Created {} rabbitmq consumers".format(cpu_count))
+    print("Created {} rabbitmq consumers".format(cpu_count))
 
-#     print(' [*] Waiting for messages. To exit press CTRL+C or kill process')
-#     #finish when all consumers die
-#     for proc in processes:
-#         proc.join()
+    print(' [*] Waiting for messages. To exit press CTRL+C or kill process')
+    #finish when all consumers die
+    for proc in processes:
+        proc.join()
     
-#     print("The all rabbitmq consumers is down")
+    print("The all rabbitmq consumers is down")
 
 def start_consumers():
     client = Consumer()   
@@ -31,12 +32,12 @@ def start_consumers():
 #for each consume use this callback
 def callback(ch, method, properties, body):
     engine = Engine()
-    engine.test(json.loads(body.decode()))
+    engine.initCollaborativeFilteringModel(json.loads(body.decode()))
 
 
-def main():
-    engine = Engine()
-    engine.loadMovieLensDataset()
-    engine.collaborativeFilteringModel()
+# def main():
+#     engine = Engine()
+#     engine.loadMovieLensDataset()
+#     engine.collaborativeFilteringModel()
 
 main()

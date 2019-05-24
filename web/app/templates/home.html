@@ -22,22 +22,23 @@
 
     <div class="pt-5 d-flex flex-column justify-content-center">
         <div id="movie_content"class="container content_movie border border-primary rounded" style="width: 650px; display: none">
+            <input type="hidden" id="movie_id" name="movie_id" value="3487">
             <div class="row pt-2 pl-2 pr-2 pb-1">
                 <div class="col-20">
                     <label>Title: </label>
-                    <label id="movie_title">The Matrix (1999)The Matrix (1999)The Matrix (1999)</label>
+                    <label id="movie_title">-</label>
                 </div>
             </div>
             <div class="row pt-1 pl-2 pr-2 pb-1">
                 <div class="col-20">
                     <label>Release: </label>
-                    <label id="movie_release">01-Jan-99</label>
+                    <label id="movie_release">-</label>
                 </div>
             </div>
             <div class="row pt-1 pl-2 pr-2 pb-1">
                 <div class="col-20">
                     <label>Genres: </label>
-                    <label id="movie_genres">Action/Fiction</label>
+                    <label id="movie_genres">-</label>
                 </div>
             </div>
             <div class="row pt-1 pl-2 pr-2 pb-1">
@@ -56,7 +57,7 @@
             </div>
             <div class="row pt-5 pb-3 justify-content-center">
                 <div class="col-5">
-                    <input class="btn btn-primary btn-block" id="submitRecommendation" name="submitRecommendation" type="submit" value="Process Recommendation" onclick="executeProcess()">
+                    <input class="btn btn-primary btn-block" id="submitRecommendation" name="submitRecommendation" type="submit" value="Process Recommendation" onclick="recommendationProcess()">
                 </div>
             </div>
         </div>

@@ -6,11 +6,12 @@ import random
 
 from app import app
 from app.forms import LoginForm, RegisterLoginForm
-from app.dao import UserDao, MovieDao
+from app.dao import UserDao, MovieDao, UserRatingDao
 from app.services import Publisher
 
 userDao = UserDao()
 movieDao = MovieDao()
+userRatingDao = UserRatingDao()
 
 '''
 route exemple: http://localhost:16000/webui
@@ -62,6 +63,9 @@ def register():
     if registerForm.validate_on_submit():
         userDao.add(registerForm.registerName.data, registerForm.registerUserName.data, registerForm.registerUserPassword.data)
         form = LoginForm()
+        registerForm.registerName.data = ""
+        registerForm.registerUserName.data = ""
+        registerForm.registerUserPassword.data = ""
         return render_template('login.html', disablemenu=True, form=form, registerForm=registerForm, tabLoginActive=True)
 
     form = LoginForm()
@@ -84,21 +88,7 @@ def search_movie_button():
     content = request.get_json()
     movies = movieDao.getMovieByName(content["movie_name"])
     if len(movies) != 0:
-        moviePayload = []
-        for movie in movies:
-            moviePayload.append(
-                {
-                    'title' : movie.title,
-                    'release_date' : movie.release_date,
-                    'genres' : movie.genres,
-                }
-            )
-
-        response = {}
-        response['status'] = 'ok'
-        response['movies'] = moviePayload[0]
-
-        return jsonify(response)
+        return create_movie_response(movies[0])
     else:
         return jsonify({
             'status' : 'not_found'
@@ -108,10 +98,13 @@ def search_movie_button():
 def random_movie_button():
     movieId = random.randint(1,1600)
     movie = movieDao.getMovieById(movieId)
+    return create_movie_response(movie)
 
+def create_movie_response(movie):
     response = {}
     response['status'] = 'ok'
-    response['movies'] = {
+    response['movie'] = {
+        'id' : movie.id,
         'title' : movie.title,
         'release_date' : movie.release_date,
         'genres' : movie.genres,
@@ -122,19 +115,33 @@ def random_movie_button():
 
 @app.route('/webui/recommendation', methods=['POST'])
 def sent_recommendation_button():
-    import datetime
-    userdata = {
-        'userid' : current_user.get_id(),
-        'date' : datetime.datetime.utcnow().strftime("%d/%m/%Y, %H:%M:%S")
-    }
-
     content = request.get_json()
-    userdata.update(content)
+
+    userId = int(current_user.get_id())
+    movieId = int(content["movie_id"])
+    rating = int(content["rating"])
+
+    ratingId = -1
+    userRating = userRatingDao.getIdUserRating(userId, movieId)
+    if userRating is None:
+        userRatingDao.add(userId, movieId, rating)
+        userRating = userRatingDao.getIdUserRating(userId, movieId)
+        ratingId = userRating.id
+    else:
+        ratingId = userRating.id
+        userRatingDao.updateRating(ratingId, rating)
+
+    response = {}
+    response['rating_id'] = ratingId
+
+    #TODO:
+    # criar um metodo em JS para verificar em 5-5s o suggest movie e mostrar na tela
 
     client = Publisher()
-    client.publish(userdata)
+    client.publish(response)
 
-    return jsonify(userdata)
+    response['status'] = 'ok'
+    return jsonify(response)
 
 @app.route('/webui/unprotected')
 def unprotected():

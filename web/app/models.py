@@ -55,7 +55,7 @@ class SuggestMovies(db.Model):
 
 class Movie(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=False)
-    title = db.Column(db.String(90))
+    title = db.Column(db.String(90), index=True)
     release_date = db.Column(db.String(12))
     genres = db.Column(db.String(90))
 

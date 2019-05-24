@@ -1,9 +1,10 @@
 from app import db
 
-from app.models import User, Movie
+from app.models import User, Movie, UserRating
 
 class UserDao():
     def add(self, name, username, password, userrole='user'):
+        #get count from table because ps seq changes when restart container
         user = User(name=name, username=username, userrole=userrole)
         user.set_password(password)
 
@@ -73,14 +74,28 @@ class MovieDao():
     def getMovieById(self, id):
         return Movie.query.get(id)
 
-class UserRating():
-    def add(self, userRating):
+class UserRatingDao():
+    def add(self, userId, movieId, rating):
+        ranting = UserRating(user_id=userId, movie_id=movieId, rating=rating)
         try:
-            db.session.add(userRating)
+            db.session.add(ranting)
             db.session.commit()
         except Exception as e: 
             print(e)
             db.session.rollback()
+
+    def updateRating(self, id, rating):
+        try:
+            obj = UserRating.query.get(id)
+            obj.rating = rating
+            db.session.commit()
+        except Exception as e: 
+            print(e)
+            db.session.rollback()
+
+    def getIdUserRating(self, userId, movieId):
+        return UserRating.query.filter_by(user_id=userId, movie_id=movieId).first()
+
 
     def listAll(self):
         print("list all UR")    

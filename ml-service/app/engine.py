@@ -1,43 +1,76 @@
 import time
 
-from app.dao import TestDao
-
+from app.dao import RatingDao, SeggestMovieDao
+from app.dataset import DatasetMovieLens
 
 import pandas as pd
-import matplotlib
-import matplotlib.pyplot as plt
 import numpy as np
 
 from sklearn.metrics.pairwise import pairwise_distances
 
+# PS: this engine executes inside python subprocess...
 class Engine:
+    ratingId = None
+    useridModelMap = None
 
-    def test(self, data):
-        print(" [x] Received %r" % data)
+    ratingDao = RatingDao()
+    seggestMovieDao = SeggestMovieDao()
 
-        time.sleep(10)
+    def initCollaborativeFilteringModel(self, ratingId):
+        try:
+            self.ratingId = ratingId['rating_id']
+            datasetMovieLens = DatasetMovieLens()
+            dataset = datasetMovieLens.getDataset()
+            cols = datasetMovieLens.getDatasetColumns()
 
-        text = "You watch the {} at {}".format(data["type"], data["date"])
-        dao = TestDao()
-        dao.insertDataOnForm(text, int(data["userid"]))
-        dao.close()
-        print(" [x] Done")
+            numUsersDatasetMovieLens = dataset.user_id.unique().shape[0]
+            userMapIndex = self.userMapIndexModel(numUsersDatasetMovieLens)
 
-    def loadMovieLensDataset(self):
-        r_cols = ['user_id', 'movie_id', 'rating', 'unix_timestamp']
-        self.ratings = pd.read_csv('app/dataset/u.data', sep='\t', names=r_cols,encoding='latin-1')
+            userid = self.ratingDao.getUserIdByRatingId(self.ratingId)
+            self.useridModelMap = userMapIndex["{}".format(userid)]
 
-    def collaborativeFilteringModel(self):
-        print(type(self.ratings))
-        print(self.ratings.head())
+            #get all ratings from database and transf in dataframe
+            ratingDatabase = self.ratingDao.getAllRatings()
+            ratingDataFrame = self.createRatingDataFrame(userMapIndex, ratingDatabase, cols)
 
-        #default dataset
-        n_users = self.ratings.user_id.unique().shape[0] #943 users
-        n_items = self.ratings.movie_id.unique().shape[0] #1682 movies
-        
+            #create new database
+            dataset = dataset.append(ratingDataFrame)
+
+            self.processCollaborativeFilteringModel(dataset)
+        except Exception as e: 
+            print(e)
+
+    def createRatingDataFrame(self, userMapIndex, ratingDatabase, cols):
+        ratingDatabaseWithNewIds = []
+        for row in ratingDatabase:
+            indexMap = "{}".format(row[0])
+            ratingDatabaseWithNewIds.append((userMapIndex[indexMap], row[1], row[2], row[3]))
+
+        return pd.DataFrame(ratingDatabaseWithNewIds, columns=cols)
+
+
+    def userMapIndexModel(self, numUsersDataset):
+        user_ids = self.ratingDao.getDistinctUserId()
+
+        # #correlation between database userid with model userid
+        userMapIndex = {}
+        count = 1
+        for id in user_ids:
+            userid_database = "{}".format(id[0])
+            userMapIndex[userid_database] = numUsersDataset+count
+            count += 1
+
+        return userMapIndex
+
+
+    def processCollaborativeFilteringModel(self, dataset):
+        #count unique elements on dataset
+        n_users = dataset.user_id.unique().shape[0] 
+        n_items = dataset.movie_id.unique().shape[0]
+
         #init matrix with zeros and populate with ratings
         data_matrix = np.zeros((n_users, n_items))
-        for line in self.ratings.itertuples():
+        for line in dataset.itertuples():
             data_matrix[line[1]-1, line[2]-1] = line[3]
 
         #user_similarity = pairwise_distances(data_matrix, metric='cosine')
@@ -46,10 +79,10 @@ class Engine:
         #user_prediction = self.predict(data_matrix, user_similarity, type='user') #between user-user
         item_prediction = self.predict(data_matrix, item_similarity, type='item')
 
-        userid = 5
-        print(self.extractTopMovies(item_prediction[userid]))
-        
-    
+        #print(self.extractTopMovies(item_prediction[self.useridModelMap-1]))
+        #save results
+        selectMovieIds = self.extractTopMovies(item_prediction[self.useridModelMap-1])
+        self.seggestMovieDao.addOrUpdate(self.ratingId, selectMovieIds)
 
     def predict(self, ratings, similarity, type='user'):
         if type == 'user':
@@ -60,7 +93,6 @@ class Engine:
         elif type == 'item':
             return ratings.dot(similarity) / np.array([np.abs(similarity).sum(axis=1)])
         
-    
     def extractTopMovies(self, item_prediction, size = 5):
         count = 1
         movies_tuples = []
@@ -76,5 +108,4 @@ class Engine:
         movies_ids = [id[0] for id in movies_tuples]
         
         movies_ids.sort()
-        return movies_tuples
-
+        return movies_ids

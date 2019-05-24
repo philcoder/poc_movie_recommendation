@@ -16,9 +16,12 @@ For more details of implementation see: https://www.analyticsvidhya.com/blog/201
 class Engine:
     ratingId = None
     useridModelMap = None
+    ratingDao = None
+    seggestMovieDao = None
 
-    ratingDao = RatingDao()
-    seggestMovieDao = SeggestMovieDao()
+    def __init__(self):
+        self.ratingDao = RatingDao()
+        self.seggestMovieDao = SeggestMovieDao()
 
     def initCollaborativeFilteringModel(self, ratingId):
         try:
@@ -87,6 +90,9 @@ class Engine:
         #save results
         selectMovieIds = self.extractTopMovies(item_prediction[self.useridModelMap-1])
         self.seggestMovieDao.addOrUpdate(self.ratingId, selectMovieIds)
+
+        self.ratingDao.close()
+        self.seggestMovieDao.close()
 
     def predict(self, ratings, similarity, type='user'):
         if type == 'user':

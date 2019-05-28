@@ -1,9 +1,11 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4/dt-1.10.18/datatables.min.css"/>
+    <!-- <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4/dt-1.10.18/datatables.min.css"/> -->
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/lib/datatables.min.css') }}"/>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/lib/datatables.min.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/pages/history.js') }}"></script>
-    <script type="text/javascript" src="https://cdn.datatables.net/v/bs4/dt-1.10.18/datatables.min.js"></script>
+    <!-- <script type="text/javascript" src="https://cdn.datatables.net/v/bs4/dt-1.10.18/datatables.min.js"></script> -->
 
     <div class="container justify-content-center align-items-center">
         <div id="history_content"class="container">
@@ -25,9 +27,6 @@
                             <td>LOADING DATA...</td>
                             <td>LOADING DATA...</td>
                             <td>LOADING DATA...</td>
-                            <!-- <td>People vs. Larry Flynt, The (1996)</td>
-                            <td>1</td>
-                            <td>Fall (1997), Shadows (Cienie) (1988), The Courtyard (1995), Safe Passage (1994), Yankee Zulu (1994)</td> -->
                         </tr>
                     </tbody>
                 </table>

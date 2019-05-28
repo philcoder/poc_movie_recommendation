@@ -1,6 +1,6 @@
 import time
 
-from app.dao import RatingDao, SeggestMovieDao
+from app.dao import RatingDao, SuggestMovieDao
 from app.dataset import DatasetMovieLens
 
 import pandas as pd
@@ -17,11 +17,11 @@ class Engine:
     ratingId = None
     useridModelMap = None
     ratingDao = None
-    seggestMovieDao = None
+    suggestMovieDao = None
 
     def __init__(self):
         self.ratingDao = RatingDao()
-        self.seggestMovieDao = SeggestMovieDao()
+        self.suggestMovieDao = SuggestMovieDao()
 
     def initCollaborativeFilteringModel(self, ratingId):
         try:
@@ -89,10 +89,7 @@ class Engine:
         #print(self.extractTopMovies(item_prediction[self.useridModelMap-1]))
         #save results
         selectMovieIds = self.extractTopMovies(item_prediction[self.useridModelMap-1])
-        self.seggestMovieDao.addOrUpdate(self.ratingId, selectMovieIds)
-
-        self.ratingDao.close()
-        self.seggestMovieDao.close()
+        self.suggestMovieDao.addOrUpdate(self.ratingId, selectMovieIds)
 
     def predict(self, ratings, similarity, type='user'):
         if type == 'user':

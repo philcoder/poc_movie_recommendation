@@ -1,44 +1,114 @@
-import psycopg2
+from app.util import Singleton
 
-class Dao:
-    connect_str = "dbname='poc_db' user='root' host='postgres-service' password='phil.poc.ia'"
+import psycopg2
+from psycopg2 import pool
+
+class DatabasePoolConnection(metaclass=Singleton):
+    __instance = None
+    __conn_pool = None
 
     def __init__(self):
-        self.connect()
+        self._connect()
+        if DatabasePoolConnection.__instance != None:
+            raise Exception("This class is a DatabasePoolConnection!")
+        else:
+            DatabasePoolConnection.__instance = self
 
-    def connect(self):
-        self.conn = psycopg2.connect(self.connect_str)
-
-    def cursor(self):
-        return self.conn.cursor()
-
-    def commit(self):
-        self.conn.commit()
+    def _connect(self):
+        try:
+            self.__conn_pool = psycopg2.pool.SimpleConnectionPool(1, 20,user = "root",
+                                            password = "phil.poc.ia",
+                                            host = "postgres-service",
+                                            port = "5432",
+                                            database = "poc_db")
+        
+            if(self.__conn_pool):
+                print("Connection pool created successfully")
+        except (Exception, psycopg2.DatabaseError) as error :
+            print ("Error while connecting to PostgreSQL", error)
 
     def close(self):
-        self.conn.close()
+        if (self.__conn_pool):
+            self.__conn_pool.closeall
+
+        print("PostgreSQL connection pool is closed")
+
+    def getConnect(self):
+        return self.__conn_pool.getconn()
+
+    def putConnect(self, conn):
+        self.__conn_pool.putconn(conn)
+
+class Dao:
+    __pool = None
+    def __init__(self):
+        self.__pool = DatabasePoolConnection()
+
+    def getResult(self, sql):
+        conn  = self.__pool.getConnect()
+        if(conn):
+            cursor = None
+            try:
+                cursor = conn.cursor()
+                cursor.execute(sql)
+                return cursor.fetchone()[0]
+            except (Exception) as error :
+                 print ("Error database: ", error)
+            finally:
+                cursor.close()
+                self.__pool.putConnect(conn)
+
+     
+    def getResults(self, sql):
+        conn  = self.__pool.getConnect()
+        if(conn):
+            cursor = None
+            try:
+                cursor = conn.cursor()
+                cursor.execute(sql)
+                return cursor.fetchall()
+            except (Exception) as error :
+                 print ("Error database: ", error)
+            finally:
+                cursor.close()
+                self.__pool.putConnect(conn)
+
+    def executeQuery(self, query):
+        queries = []
+        queries.append(query)
+        self.executeQueries(queries)
+
+    def executeQueries(self, queries):
+        conn  = self.__pool.getConnect()
+        if(conn):
+            cursor = None
+            try:
+                cursor = conn.cursor()
+                for query in queries:
+                    cursor.execute(query)
+            except (Exception) as error :
+                 print ("Error database: ", error)
+            finally:
+                cursor.close()
+                conn.commit()
+                self.__pool.putConnect(conn)
+
 
 class RatingDao(Dao):
     def __init__(self):
         Dao.__init__(self)
 
     def getUserIdByRatingId(self, rating_id):
-        cursor =  super().cursor()
-        cursor.execute("""select user_id from public.user_rating where id = %s;""" % (rating_id))
-        return cursor.fetchone()[0] #fetch one item inside tuple
+        return super().getResult("""select user_id from public.user_rating where id = %s;""" % (rating_id))
 
 
     def getAllRatings(self):
-        cursor =  super().cursor()
-        cursor.execute("""select user_id, movie_id, rating, '982126156' as fake_timestamp from public.user_rating order by id;""")
-        return cursor.fetchall()
+        return super().getResults("""select user_id, movie_id, rating, '982126156' as fake_timestamp from public.user_rating order by id;""")
 
     def getDistinctUserId(self):
-        cursor =  super().cursor()
-        cursor.execute("""select DISTINCT user_id from public.user_rating order by user_id;""")
-        return cursor.fetchall()
+        return super().getResults("""select DISTINCT user_id from public.user_rating order by user_id;""")
 
-class SeggestMovieDao(Dao):
+class SuggestMovieDao(Dao):
     def __init__(self):
         Dao.__init__(self)
 
@@ -47,40 +117,13 @@ class SeggestMovieDao(Dao):
         if self.count(ratingId) != 0:
             self.deleteFromRatingId(ratingId)
 
-        #add
-        cursor = super().cursor()
+        queries = []
         for movieId in selectMovieIds:
-            cursor.execute("""insert into public.suggest_movies (rating_id, movie_id) values (%s, %s)""" % (ratingId, movieId))
-        super().commit()
+            queries.append("""insert into public.suggest_movies (rating_id, movie_id) values (%s, %s)""" % (ratingId, movieId))
+        super().executeQueries(queries)
 
     def count(self, ratingId):
-        cursor =  super().cursor()
-        cursor.execute("""select count(*) from public.suggest_movies where rating_id = %s;""" % (ratingId))
-        return cursor.fetchone()[0]
+        return super().getResult("""select count(*) from public.suggest_movies where rating_id = %s;""" % (ratingId))
     
     def deleteFromRatingId(self, ratingId):
-        cursor =  super().cursor()
-        cursor.execute("""delete from public.suggest_movies where rating_id = %s;""" % (ratingId))
-        super().commit()
-
-
-# class TestDao(object):
-#     connect_str = "dbname='poc_db' user='root' host='postgres-service' password='phil.poc.ia'"
-
-#     def __init__(self):
-#         self.connect()
-
-#     def connect(self):
-#         self.conn = psycopg2.connect(self.connect_str)
-
-#     def cursor(self):
-#         return self.conn.cursor()
-
-#     def close(self):
-#         self.conn.close()
-
-#     def insertDataOnForm(self, bodytext, userid):
-#         cursor = self.cursor()
-#         cursor.execute("""insert into public.post (bodytext, user_id) values ('%s', %d) RETURNING id""" % (bodytext, userid))
-#         self.conn.commit()
-#         return cursor.fetchone()[0] #return id
+        super().executeQuery("""delete from public.suggest_movies where rating_id = %s;""" % (ratingId))

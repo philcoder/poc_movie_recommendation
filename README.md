@@ -76,7 +76,7 @@ Access web service: http://localhost:16000/webui
 ### Future Works
 
 - Implements Pattern Database per service
--- Remove ml-service from database access
--- Only the web componente will manipulate database (using Schema-per-service)
+1. Remove ml-service from database access
+2. Only the web componente will manipulate database (using Schema-per-service)
 
 - Each web-front client will publish to activemq (have own queue) and wait for the recommended movies (Choreography-based saga)
